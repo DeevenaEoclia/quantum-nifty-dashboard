@@ -7,8 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from models.classical import classical_predict
-from models.quantum import quantum_predict
+from .models.classical import classical_predict
+from .models.quantum import quantum_predict
 
 app = FastAPI()
 
