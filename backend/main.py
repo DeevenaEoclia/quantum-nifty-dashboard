@@ -1,6 +1,7 @@
 import yfinance as yf
 import numpy as np
 import time
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,12 +21,17 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Mount static files if they exist
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/")
-def read_root():
-    return FileResponse("static/index.html")
+    @app.get("/")
+    def read_root():
+        return FileResponse("static/index.html")
+else:
+    @app.get("/")
+    def read_root():
+        return {"message": "Quantum Nifty Dashboard API is running"}
 
 @app.get("/api/predict")
 def predict(symbol: str = "RELIANCE.NS"):
