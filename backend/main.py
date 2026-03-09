@@ -22,12 +22,16 @@ app.add_middleware(
 )
 
 # Mount static files if they exist
-if os.path.exists("static"):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+frontend_path = os.path.join(os.path.dirname(__file__), "../frontend/dist")
+
+if os.path.exists(frontend_path):
+
+    app.mount("/assets", StaticFiles(directory=f"{frontend_path}/assets"), name="assets")
 
     @app.get("/")
     def read_root():
-        return FileResponse("static/index.html")
+        return FileResponse(f"{frontend_path}/index.html")
+
 else:
     @app.get("/")
     def read_root():
