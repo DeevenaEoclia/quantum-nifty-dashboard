@@ -21,21 +21,33 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Mount static files if they exist
-frontend_path = os.path.join(os.path.dirname(__file__), "../frontend/dist")
+# Resolve frontend path: support both local development and Docker deployment
+base_dir = os.path.dirname(__file__)
+dev_frontend = os.path.join(base_dir, "../frontend/dist")
+prod_frontend = os.path.join(base_dir, "static")
 
-if os.path.exists(frontend_path):
+if os.path.exists(prod_frontend) and os.path.exists(os.path.join(prod_frontend, "index.html")):
+    frontend_path = prod_frontend
+elif os.path.exists(dev_frontend) and os.path.exists(os.path.join(dev_frontend, "index.html")):
+    frontend_path = dev_frontend
+else:
+    frontend_path = None
 
-    app.mount("/assets", StaticFiles(directory=f"{frontend_path}/assets"), name="assets")
+if frontend_path:
+    # Mount assets if they exist (Vite builds usually have an assets folder)
+    assets_path = os.path.join(frontend_path, "assets")
+    if os.path.exists(assets_path):
+        app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
     @app.get("/")
     def read_root():
-        return FileResponse(f"{frontend_path}/index.html")
+        return FileResponse(os.path.join(frontend_path, "index.html"))
 
+    # Also catch-all for SPAs if needed, but for now just the root
 else:
     @app.get("/")
     def read_root():
-        return {"message": "Quantum Nifty Dashboard API is running"}
+        return {"message": "Quantum Predict Dashboard API is running (Frontend not found)"}
 
 @app.get("/api/predict")
 def predict(symbol: str = "RELIANCE.NS"):
@@ -88,9 +100,62 @@ def predict(symbol: str = "RELIANCE.NS"):
         "classical_confidence": float(classical_conf),
         "quantum_confidence": float(quantum_conf),
         "classical_time": classical_time,
-        "quantum_time": quantum_time,        "classical_train_accuracy": float(classical_acc),
-        "quantum_train_accuracy": float(quantum_acc),        "winner": winner,
+        "quantum_time": quantum_time,
+        "classical_train_accuracy": float(classical_acc),
+        "quantum_train_accuracy": float(quantum_acc),
+        "winner": winner,
         "market_direction": market_direction,
         "direction_confidence": float(direction_confidence),
         "chart_data": chart_data
     }
+
+from pydantic import BaseModel
+from typing import List, Dict
+
+class AdvisoryRequest(BaseModel):
+    symbol: str
+    current_price: float
+    classical_prediction: float
+    quantum_prediction: float
+    winner: str
+    market_direction: str
+    direction_confidence: float
+    classical_train_accuracy: float
+    quantum_train_accuracy: float
+
+@app.post("/api/advisory")
+def get_advisory(data: AdvisoryRequest):
+    """
+    Generate a technical AI advisory summary based on model results.
+    """
+    # Logic to generate a professional summary
+    symbol_name = data.symbol.replace(".NS", "")
+    direction = data.market_direction
+    confidence = data.direction_confidence
+    winner = data.winner
+    
+    # Analyze accuracy difference
+    acc_diff = abs(data.quantum_train_accuracy - data.classical_train_accuracy)
+    more_accurate = "Quantum" if data.quantum_train_accuracy > data.classical_train_accuracy else "Classical"
+    
+    summary = f"### Market Advisory for {symbol_name}\n\n"
+    summary += f"Our analysis indicates a **{direction}** trend with a confidence level of **{confidence:.1f}%**. "
+    
+    if winner == "Quantum":
+        summary += f"The **Quantum Variational Circuit (VQC)** has outperformed the classical model in this session, "
+        summary += f"providing a more robust projection of price movement. "
+    else:
+        summary += f"The **Classical ML Model** currently shows higher stability for this specific asset. "
+        
+    summary += f"\n\n**Technical Insight:** The {more_accurate} model shows a training accuracy lead of {acc_diff:.1f}%. "
+    
+    if direction == "UP":
+        summary += f"Bullish indicators suggest a target price near ₹{data.quantum_prediction:.2f}. "
+        summary += "Consider monitoring volume support at current levels."
+    else:
+        summary += f"Bearish sentiment suggests a potential retracement toward ₹{data.quantum_prediction:.2f}. "
+        summary += "Caution is advised as the model picks up increased volatility signatures."
+        
+    summary += "\n\n*Note: This is an AI-generated technical summary and does not constitute financial advice.*"
+
+    return {"summary": summary}

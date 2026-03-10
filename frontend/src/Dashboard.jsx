@@ -12,13 +12,13 @@ const styles = `
     color: #e2e8f0;
   }
 
-  .app { background: #080e1a; min-height: 100vh; }
+  .app { background: #080e1a; min-height: 100vh; width: 100%; margin: 0; padding: 0; }
 
   /* ── NAVBAR ── */
   .navbar {
     background: #0d1525;
     border-bottom: 1px solid #1a2744;
-    padding: 0 32px;
+    padding: 0 16px;
     height: 64px;
     display: flex;
     align-items: center;
@@ -72,7 +72,7 @@ const styles = `
 
   .nav-search-form {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     display: flex;
     align-items: center;
     background: #131e33;
@@ -149,9 +149,10 @@ const styles = `
 
   /* ── MAIN LAYOUT ── */
   .main {
-    padding: 24px 32px;
-    max-width: 1600px;
-    margin: 0 auto;
+    padding: 24px 16px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
   }
 
   /* ── STOCK HEADER ROW ── */
@@ -229,9 +230,9 @@ const styles = `
   /* ── CENTER CONTENT GRID ── */
   .content-grid {
     display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 20px;
-    margin-bottom: 20px;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    margin-bottom: 24px;
   }
 
   /* ── CHART CARD ── */
@@ -563,6 +564,28 @@ const styles = `
   .perf-bar-bg { background: #0d1525; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; }
   .perf-bar-fill { height: 100%; border-radius: 4px; }
 
+  /* Advisory content */
+  .advisory-output {
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #e2e8f0;
+    white-space: pre-wrap;
+  }
+  .advisory-output h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: #60a5fa;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .advisory-output strong { color: #fff; }
+
   /* ── LOADING ── */
   .loading-screen {
     background: #080e1a; min-height: 100vh;
@@ -575,6 +598,127 @@ const styles = `
 
   /* Tooltip custom */
   .recharts-tooltip-wrapper { outline: none; }
+
+  /* Asset Dropdown */
+  .asset-select-wrap {
+    background: #131e33;
+    border: 1px solid #1e2f4a;
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 12px;
+    position: relative;
+  }
+
+  .asset-select-wrap:hover {
+    border-color: #3b82f6;
+    background: #1a2744;
+  }
+
+  .asset-select-label {
+    font-size: 11px;
+    color: #4b6080;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  .asset-select-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .asset-dropdown-list {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 240px;
+    background: #0d1525;
+    border: 1px solid #1a2744;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 6px;
+  }
+
+  .asset-option {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .asset-option:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #f1f5f9;
+  }
+
+  .asset-option.active {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    font-weight: 600;
+  }
+
+  /* Collapsible Advisory */
+  .advisory-box {
+    margin-top: 12px;
+    border: 1px solid #1a2744;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0d1525;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .advisory-box-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    background: rgba(59, 130, 246, 0.05);
+  }
+
+  .advisory-box-header:hover {
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  .advisory-toggle-arrow {
+    font-size: 10px;
+    transition: transform 0.3s;
+    color: #4b6080;
+  }
+
+  .advisory-toggle-arrow.open {
+    transform: rotate(180deg);
+    color: #3b82f6;
+  }
+
+  .advisory-collapse-content {
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    padding: 0 16px;
+  }
+
+  .advisory-collapse-content.open {
+    max-height: 800px;
+    opacity: 1;
+    padding: 16px;
+    border-top: 1px solid rgba(59, 130, 246, 0.1);
+  }
 `
 
 export default function Dashboard() {
@@ -584,6 +728,10 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("dashboard")
   const [error, setError] = useState("")
+  const [advisory, setAdvisory] = useState("")
+  const [advisoryLoading, setAdvisoryLoading] = useState(false)
+  const [advisoryExpanded, setAdvisoryExpanded] = useState(false)
+  const [showAssetDropdown, setShowAssetDropdown] = useState(false)
 
   const popularStocks = [
     { symbol: "^NSEI", name: "Nifty 50 Index" },
@@ -605,10 +753,58 @@ export default function Dashboard() {
   const fetchData = (symbol) => {
     setLoading(true)
     setData(null)
+    setAdvisory("")
+    setError("")
     fetch(`/api/predict?symbol=${encodeURIComponent(symbol)}`)
-      .then((res) => res.json())
-      .then((result) => { setData(result); setLoading(false) })
-      .catch((error) => { console.error("Error fetching data:", error); setLoading(false) })
+      .then((res) => {
+        if (!res.ok) throw new Error(`API error: ${res.status}`)
+        return res.json()
+      })
+      .then((result) => {
+        if (result.error) {
+          setError(result.error)
+          setData(null)
+        } else {
+          setData(result)
+        }
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err)
+        setError("Market data unavailable. Please check the stock symbol.")
+        setLoading(false)
+      })
+  }
+
+  const handleAdvisory = () => {
+    if (!data || advisoryLoading) return
+    setAdvisoryLoading(true)
+
+    fetch('/api/advisory', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        symbol: data.symbol,
+        current_price: data.current_price,
+        classical_prediction: data.classical_prediction,
+        quantum_prediction: data.quantum_prediction,
+        winner: data.winner,
+        market_direction: data.market_direction,
+        direction_confidence: data.direction_confidence,
+        classical_train_accuracy: data.classical_train_accuracy,
+        quantum_train_accuracy: data.quantum_train_accuracy
+      })
+    })
+      .then(res => res.json())
+      .then(result => {
+        setAdvisory(result.summary)
+        setAdvisoryLoading(false)
+        setAdvisoryExpanded(true)
+      })
+      .catch(err => {
+        console.error("Advisory error:", err)
+        setAdvisoryLoading(false)
+      })
   }
 
   useEffect(() => { fetchData(searchSymbol) }, [])
@@ -617,10 +813,6 @@ export default function Dashboard() {
     e.preventDefault()
     const query = inputValue.trim()
     if (!query) return
-
-    // reset error & loading right away so user can try again
-    setError("")
-    setLoading(false)
 
     // try to match popularStocks first
     const stock = popularStocks.find(
@@ -631,14 +823,17 @@ export default function Dashboard() {
     let symbol = ""
     if (stock) {
       symbol = stock.symbol
-    } else if (query.toUpperCase().endsWith(".NS")) {
-      // arbitrary NSE symbol entered
-      symbol = query.toUpperCase()
+      setInputValue(stock.name) // Sync input with full name
     } else {
-      // invalid input
-      setError("Please enter a company included in Nifty 50")
-      setData(null)
-      return
+      // For arbitrary input, try to sanitize it as a symbol
+      let upperQuery = query.toUpperCase()
+
+      // If it looks like a symbol but doesn't have .NS, append it
+      if (!upperQuery.includes(".") && !upperQuery.includes("^")) {
+        symbol = `${upperQuery}.NS`
+      } else {
+        symbol = upperQuery
+      }
     }
 
     setSearchSymbol(symbol)
@@ -774,6 +969,35 @@ export default function Dashboard() {
           </div>
 
           <div className="nav-tabs">
+            {/* Asset Selection Dropdown */}
+            <div className="asset-select-wrap" onClick={() => setShowAssetDropdown(!showAssetDropdown)} style={{ position: 'relative' }}>
+              <span className="asset-select-label">WATCHING INFO</span>
+              <span className="asset-select-value">
+                {getCompanyName()} <span style={{ fontSize: '10px', opacity: 0.6 }}>{showAssetDropdown ? "▲" : "▼"}</span>
+              </span>
+
+              {showAssetDropdown && (
+                <div className="asset-dropdown-list">
+                  {popularStocks.map(stock => (
+                    <div
+                      key={stock.symbol}
+                      className={`asset-option ${searchSymbol === stock.symbol ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSearchSymbol(stock.symbol);
+                        setInputValue(stock.name);
+                        fetchData(stock.symbol);
+                        setShowAssetDropdown(false);
+                      }}
+                    >
+                      <span style={{ flex: 1, textAlign: 'left' }}>{stock.name}</span>
+                      <span style={{ fontSize: '10px', opacity: 0.5 }}>{stock.symbol}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
               className={`nav-tab ${activeTab === "dashboard" ? "active" : ""}`}
               onClick={() => setActiveTab("dashboard")}
@@ -877,7 +1101,39 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <button className="advisory-btn">⚡ REQUEST AI ADVISORY</button>
+                  <button
+                    className="advisory-btn"
+                    onClick={handleAdvisory}
+                    disabled={advisoryLoading}
+                  >
+                    {advisoryLoading ? "分析中 (ANALYZING)..." : "⚡ REQUEST AI ADVISORY"}
+                  </button>
+
+                  {advisory && (
+                    <div className="advisory-box">
+                      <div className="advisory-box-header" onClick={() => setAdvisoryExpanded(!advisoryExpanded)}>
+                        <div className="signal-label" style={{ marginBottom: 0 }}>
+                          <span>✨</span> AI INSIGHT SUMMARY
+                        </div>
+                        <span className={`advisory-toggle-arrow ${advisoryExpanded ? 'open' : ''}`}>▼</span>
+                      </div>
+                      <div className={`advisory-collapse-content ${advisoryExpanded ? 'open' : ''}`}>
+                        <div className="advisory-output" style={{ border: 'none', background: 'transparent', marginTop: 0, padding: 0 }}>
+                          {advisory.split('\n').map((line, i) => {
+                            if (line.startsWith('### ')) {
+                              return <h3 key={i}>{line.replace('### ', '')}</h3>
+                            }
+                            const parts = line.split('**');
+                            return (
+                              <div key={i} style={{ marginBottom: i < advisory.split('\n').length - 1 ? '8px' : 0 }}>
+                                {parts.map((part, j) => j % 2 === 1 ? <strong key={j}>{part}</strong> : part)}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="vqc-info">
                     <div className="vqc-row">

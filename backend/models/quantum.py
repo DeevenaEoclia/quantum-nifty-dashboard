@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 def quantum_predict(data):
 
     scaler = MinMaxScaler()
-    scaled = scaler.fit_transform(data.reshape(-1,1))
+    scaled1 = scaler.fit_transform(data.reshape(-1,1))
 
     X = []
     y = []
